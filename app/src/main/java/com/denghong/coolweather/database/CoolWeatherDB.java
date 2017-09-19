@@ -26,6 +26,7 @@ public class CoolWeatherDB {
     private static final String TABLE_PROVINCE = "Province";
     private static final String TABLE_CITY = "City";
     private static final String TABLE_COUNTY = "County";
+
     private static final String KEY_PROVINCE_NAME = "province_name";
     private static final String KEY_PROVINCE_CODE = "province_code";
     private static final String KEY_CITY_NAME = "city_name";
