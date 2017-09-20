@@ -5,6 +5,6 @@ package com.denghong.coolweather.util;
  */
 
 public interface HttpCallbackListener {
-    void onFinish(String reponse);
+    void onFinish(String response);
     void onError(Exception e);
 }

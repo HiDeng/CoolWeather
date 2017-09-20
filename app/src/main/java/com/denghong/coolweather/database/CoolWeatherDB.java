@@ -41,7 +41,7 @@ public class CoolWeatherDB {
      */
     public static final int VERSION = 1;
 
-    private CoolWeatherDB mCoolWeatherDB;
+    private static CoolWeatherDB mCoolWeatherDB;
 
     private SQLiteDatabase mDB;
 
@@ -60,7 +60,7 @@ public class CoolWeatherDB {
      * @param context
      * @return
      */
-    public synchronized CoolWeatherDB getInstance(Context context) {
+    public synchronized static CoolWeatherDB getInstance(Context context) {
         if (mCoolWeatherDB == null) {
             mCoolWeatherDB = new CoolWeatherDB(context);
         }
@@ -84,7 +84,7 @@ public class CoolWeatherDB {
      * 从数据库中读取全国所有省份
      * @return
      */
-    public List<Province> loadProvince() {
+    public List<Province> loadProvinces() {
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = mDB.query(TABLE_PROVINCE, null, null, null, null, null, null);
 
@@ -115,7 +115,7 @@ public class CoolWeatherDB {
     }
 
     // 从数据库中读取某省下得所有城市信息
-    public List<City> loadCity(int provinceId) {
+    public List<City> loadCities(int provinceId) {
         List<City> list = new ArrayList<City>();
         Cursor cursor = mDB.query(TABLE_CITY, null, "province_id = ?",
                 new String[]{String.valueOf(provinceId)}, null, null, null);
@@ -147,7 +147,7 @@ public class CoolWeatherDB {
     }
 
     // 从数据库中读取某市的所有县的信息
-    public List<County> loadCounty(int cityId) {
+    public List<County> loadCounties(int cityId) {
         List<County> list = new ArrayList<County>();
         Cursor cursor = mDB.query(TABLE_COUNTY, null, "city_id = ?",
                 new String[]{String.valueOf(cityId)}, null, null, null);
