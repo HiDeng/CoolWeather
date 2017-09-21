@@ -47,6 +47,10 @@ public class ChooseAreaActivity extends Activity {
     private CoolWeatherDB mCoolWeatherDB;
 
     /**
+     * 判断是否是从WeatherActivity跳转过来的
+     */
+    private boolean isFromWeatherActivity;
+    /**
      * 省列表
      */
     private List<Province> provinceList;
@@ -75,8 +79,12 @@ public class ChooseAreaActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this); //TODO
-        if (prefs.getBoolean(Utility.KEY_CITYSELECTED, false)) {
+        // 已经选择了城市，并且不是从WeatherActivity跳转过来的，才会直接跳转到WeatherActivity
+        if (prefs.getBoolean(Utility.KEY_CITYSELECTED, false)
+                && !isFromWeatherActivity) {
             Intent intent = new Intent(this, WeatherActivity.class);
             startActivity(intent);
             finish();
@@ -109,7 +117,7 @@ public class ChooseAreaActivity extends Activity {
                     Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
                     intent.putExtra("county_code", countyCode);
                     startActivity(intent);
-//                    finish();
+                    finish();
                 }
             }
         });
@@ -255,6 +263,10 @@ public class ChooseAreaActivity extends Activity {
         } else if (currentLevel == LEVEL_COUNTY) {
             queryCities();
         } else {
+            if (isFromWeatherActivity) {
+                Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                startActivity(intent);
+            }
             finish();
         }
     }
