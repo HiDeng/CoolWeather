@@ -191,7 +191,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
 
         // 开启后台线定时刷新天气信息
         Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
-        startActivity(intent);
+        startService(intent);
     }
 
 }
