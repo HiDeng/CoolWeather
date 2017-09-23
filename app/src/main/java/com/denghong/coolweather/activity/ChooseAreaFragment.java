@@ -2,9 +2,9 @@ package com.denghong.coolweather.activity;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +20,6 @@ import com.denghong.coolweather.module.City;
 import com.denghong.coolweather.module.County;
 import com.denghong.coolweather.module.Province;
 import com.denghong.coolweather.util.HttpUtil;
-import com.denghong.coolweather.util.LogUtil;
 import com.denghong.coolweather.util.Utility;
 
 import org.litepal.crud.DataSupport;
@@ -32,8 +31,6 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-
-import static com.denghong.coolweather.util.LogUtil.TAG;
 
 /**
  * Created by denghong on 2017/9/23.
@@ -64,7 +61,6 @@ public class ChooseAreaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 初始化Fragment的布局。加载布局和findViewById的操作通常在此函数内完成
-        LogUtil.d(TAG, "onCreateView start");
         View view = inflater.inflate(R.layout.choose_area, container, false);
         titleText = (TextView) view.findViewById(R.id.title_text);
         backButton = (Button) view.findViewById(R.id.back_button);
@@ -86,6 +82,12 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity2.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
