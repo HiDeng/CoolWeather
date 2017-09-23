@@ -7,7 +7,9 @@ import android.util.Log;
  */
 
 public class LogUtil {
-    
+
+    public static final String TAG = "CoolWeather";
+
     private static final int VERBOSE = 1;
     private static final int DEBUG = 2;
     private static final int INFO = 3;

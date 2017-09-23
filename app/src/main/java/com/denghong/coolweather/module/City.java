@@ -1,14 +1,17 @@
 package com.denghong.coolweather.module;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * Created by denghong on 2017/9/19.
  */
 
-public class City {
+public class City extends DataSupport{
 
     private int id;
     private String cityName;
     private String cityCode;
+    private String weatherId;
     private int provinceId;
 
     public int getId() {
@@ -42,4 +45,13 @@ public class City {
     public void setProvinceId(int provinceId) {
         this.provinceId = provinceId;
     }
+
+    public String getWeatherId() {
+        return weatherId;
+    }
+
+    public void setWeatherId(String weatherId) {
+        this.weatherId = weatherId;
+    }
+
 }

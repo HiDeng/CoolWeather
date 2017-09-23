@@ -4,17 +4,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.denghong.coolweather.database.CoolWeatherDB;
 import com.denghong.coolweather.module.City;
 import com.denghong.coolweather.module.County;
 import com.denghong.coolweather.module.Province;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import static com.denghong.coolweather.util.LogUtil.TAG;
 
 /**
  * Created by denghong on 2017/9/19.
@@ -70,7 +75,13 @@ public class Utility {
         return false;
     }
 
-    // 解析并处理服务器返回的县级数据
+    /**
+     * 解析并处理服务器返回的县级数据
+     * @param coolWeatherDB
+     * @param response
+     * @param cityId
+     * @return
+     */
     public synchronized static boolean handleCountiedResponse(CoolWeatherDB coolWeatherDB, String response, int cityId) {
         if(!TextUtils.isEmpty(response)) {
             String[] allCounties = response.split(",");
@@ -147,5 +158,84 @@ public class Utility {
         editor.putString(KEY_PUBLISHTIME, publishTime);
         editor.putString(KEY_CURRENTDATE, sdf.format(new Date()));
         editor.commit();
+    }
+
+    /*----------------------------------------------------------------------------------------------*/
+
+    /**
+     * 通过JSONObject的方式解析并处理服务器返回的省级数据
+     * @param response
+     * @return
+     */
+    public static boolean handleProvincesResponse(String response) {
+       if (!TextUtils.isEmpty(response)) {
+           try {
+               Log.d(TAG, "response = " + response);
+               JSONArray allProvinces = new JSONArray(response);
+               for (int i = 0; i < allProvinces.length(); i++) {
+                   JSONObject provinceObject = allProvinces.getJSONObject(i);
+                   Province province = new Province();
+                   province.setProvinceName(provinceObject.getString("name"));
+                   province.setProvinceCode(provinceObject.getString("id"));
+                   province.save(); // 将Province对象保存到数据库中
+               }
+               return true;
+           } catch (JSONException e) {
+               e.printStackTrace();
+           }
+       }
+        return false;
+    }
+
+    /**
+     * 通过JSON的方式来解析并处理服务器返回的市级数据
+     * @param response
+     * @param provinceId
+     * @return
+     */
+    public static boolean handleCitiesResponse(String response, int provinceId) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONArray allCities = new JSONArray(response);
+                for (int i = 0; i < allCities.length(); i++) {
+                    JSONObject cityObject = allCities.getJSONObject(i);
+                    City city = new City();
+                    city.setCityName(cityObject.getString("name"));
+                    city.setCityCode(cityObject.getString("id"));
+                    city.setProvinceId(provinceId);
+                    city.save();
+                }
+                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 通过JSON的方式来解析和处理服务器返回的县级数据
+     * @param response
+     * @param cityId
+     * @return
+     */
+    public static boolean handleCountiedResponse(String response, int cityId) {
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONArray allCounties = new JSONArray(response);
+                for (int i = 0;i < allCounties.length(); i++) {
+                    JSONObject countyObject = allCounties.getJSONObject(i);
+                    County county = new County();
+                    county.setCountyName(countyObject.getString("name"));
+                    county.setCountyCode(countyObject.getString("id"));
+                    county.setCityId(cityId);
+                    county.save();
+                }
+                return true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

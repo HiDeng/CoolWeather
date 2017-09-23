@@ -3,12 +3,13 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="#fff">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#484E61">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
 
         <TextView
             android:id="@+id/title_text"
@@ -16,7 +17,16 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="#fff"
-            android:textSize="24sp"/>
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_back"/>
     </RelativeLayout>
 
     <ListView
