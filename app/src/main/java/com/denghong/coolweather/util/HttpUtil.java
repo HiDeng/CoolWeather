@@ -52,7 +52,6 @@ public class HttpUtil {
                     if (listener != null) {
                         listener.onError(e);
                     }
-                    Log.e("CoolWeather", e.toString());
                 } finally {
                     conn.disconnect();
                 }

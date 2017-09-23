@@ -116,6 +116,7 @@ public class ChooseAreaFragment extends Fragment {
                 dataList.add(province.getProvinceName());
             }
             adapter.notifyDataSetChanged();
+            listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
         } else {
             String address = "http://guolin.tech/api/china";
@@ -129,13 +130,14 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
-        cityList = DataSupport.findAll(City.class);
+        cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.getId())).find(City.class); // TODO provinceid是从哪儿来的？自动生成的？
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
                 dataList.add(city.getCityName());
             }
             adapter.notifyDataSetChanged();
+            listView.setSelection(0);
             currentLevel = LEVEL_CITY;
         } else {
             int provinceCode = Integer.parseInt(selectedProvince.getProvinceCode());
@@ -150,13 +152,14 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
-        countyList = DataSupport.findAll(County.class);
+        countyList = DataSupport.where("cityid = ?", String.valueOf(selectedCity.getId())).find(County.class);
         if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList) {
                 dataList.add(county.getCountyName());
             }
             adapter.notifyDataSetChanged();
+            listView.setSelection(0);
             currentLevel = LEVEL_COUNTY;
         } else {
             int provinceCode = Integer.parseInt(selectedProvince.getProvinceCode());
@@ -190,7 +193,6 @@ public class ChooseAreaFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
 //                String responseText = response.body().toString(); // TODO 这样写是错误的，这里花了不少时间来排查！！！
                 String responseText = response.body().string();
-                Log.d(TAG, "response text = " + responseText);
                 boolean result = false;
                 if ("province".equals(type)) {
                     result = Utility.handleProvincesResponse(responseText);
@@ -200,13 +202,11 @@ public class ChooseAreaFragment extends Fragment {
                     result = Utility.handleCountiedResponse(responseText, selectedCity.getId());
                 }
 
-                Log.d(TAG, "query from server, result = " + result);
 
                 if (result) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "close progress dialog---------------------");
                             closeProgressDialog();
                             if ("province".equals(type)) {
                                 queryProvinces();
